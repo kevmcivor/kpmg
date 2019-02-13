@@ -50,24 +50,31 @@ export class NewsEditComponent implements OnInit {
     });
   }
 
-  redirectToView(articleId: number) {
-    this.router.navigate(['/news', articleId]);
+
+  private redirectToView(command: any[]) {
+    this.router.navigate(command);
   }
 
-  save(value: ArticleUpdateDto, valid: boolean): void {
+  private redirectToArticle(articleId: number) {
+    this.redirectToView(['/news', articleId]);
+  }
+
+  save(article: ArticleUpdateDto, valid: boolean): void {
       this.submitted = true;
       if (valid) {
-        this.client.updateArticle(value).subscribe(result => {
-          this.redirectToView(value.id);
+        this.client.updateArticle(article).subscribe(result => {
+          this. redirectToArticle(article.id);
         }, error => console.error(error));
       }
   }
 
   cancel(): void {
-    this.redirectToView(this.editForm.controls.id.value);
+    this.redirectToArticle(this.editForm.controls.id.value);
   }
 
   delete(): void {
-    this.client.deleteArticle(this.editForm.controls.id.value);
+    this.client.deleteArticle(this.editForm.controls.id.value).subscribe(result => {
+      this.redirectToView(['/news/news-latest']);
+    }, error => console.error(error));
   }
 }

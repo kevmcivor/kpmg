@@ -17,7 +17,7 @@ export interface IArticlesClient {
     getArticle(id: number): Observable<ArticleDto | null>;
     deleteArticle(id: number): Observable<void>;
     createArticle(newsArticleCreateDTO: ArticleCreateDto): Observable<ArticleDto | null>;
-    updateArticle(newsArticleUpdateDTO: ArticleUpdateDto): Observable<ArticleDto | null>;
+    updateArticle(newsArticleUpdateDTO: ArticleUpdateDto): Observable<void>;
     getRecent(): Observable<ArticleDto[] | null>;
 }
 
@@ -36,7 +36,7 @@ export class ArticlesClient implements IArticlesClient {
         let url_ = this.baseUrl + "/api/v1/news/article/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -63,8 +63,8 @@ export class ArticlesClient implements IArticlesClient {
 
     protected processGetArticle(response: HttpResponseBase): Observable<ArticleDto | null> {
         const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
@@ -91,7 +91,7 @@ export class ArticlesClient implements IArticlesClient {
         let url_ = this.baseUrl + "/api/v1/news/article/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -117,18 +117,14 @@ export class ArticlesClient implements IArticlesClient {
 
     protected processDeleteArticle(response: HttpResponseBase): Observable<void> {
         const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
+        if (status === 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return _observableOf<void>(<any>null);
-            }));
-        } else if (status === 404) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("A server error occurred.", status, _responseText, _headers);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -149,7 +145,7 @@ export class ArticlesClient implements IArticlesClient {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
+                "Content-Type": "application/json", 
                 "Accept": "application/json"
             })
         };
@@ -170,8 +166,8 @@ export class ArticlesClient implements IArticlesClient {
 
     protected processCreateArticle(response: HttpResponseBase): Observable<ArticleDto | null> {
         const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
@@ -190,7 +186,7 @@ export class ArticlesClient implements IArticlesClient {
         return _observableOf<ArticleDto | null>(<any>null);
     }
 
-    updateArticle(newsArticleUpdateDTO: ArticleUpdateDto): Observable<ArticleDto | null> {
+    updateArticle(newsArticleUpdateDTO: ArticleUpdateDto): Observable<void> {
         let url_ = this.baseUrl + "/api/v1/news/article";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -201,8 +197,7 @@ export class ArticlesClient implements IArticlesClient {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/json"
+                "Content-Type": "application/json", 
             })
         };
 
@@ -213,33 +208,30 @@ export class ArticlesClient implements IArticlesClient {
                 try {
                     return this.processUpdateArticle(<any>response_);
                 } catch (e) {
-                    return <Observable<ArticleDto | null>><any>_observableThrow(e);
+                    return <Observable<void>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<ArticleDto | null>><any>_observableThrow(response_);
+                return <Observable<void>><any>_observableThrow(response_);
         }));
     }
 
-    protected processUpdateArticle(response: HttpResponseBase): Observable<ArticleDto | null> {
+    protected processUpdateArticle(response: HttpResponseBase): Observable<void> {
         const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
+        if (status === 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ArticleDto.fromJS(resultData200) : <any>null;
-            return _observableOf(result200);
+            return _observableOf<void>(<any>null);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<ArticleDto | null>(<any>null);
+        return _observableOf<void>(<any>null);
     }
 
     getRecent(): Observable<ArticleDto[] | null> {
@@ -270,8 +262,8 @@ export class ArticlesClient implements IArticlesClient {
 
     protected processGetRecent(response: HttpResponseBase): Observable<ArticleDto[] | null> {
         const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
@@ -321,7 +313,7 @@ export class CommentsClient implements ICommentsClient {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
+                "Content-Type": "application/json", 
                 "Accept": "application/json"
             })
         };
@@ -342,8 +334,8 @@ export class CommentsClient implements ICommentsClient {
 
     protected processCreateComment(response: HttpResponseBase): Observable<FileResponse | null> {
         const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
@@ -387,7 +379,7 @@ export class RatingsClient implements IRatingsClient {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
+                "Content-Type": "application/json", 
                 "Accept": "application/json"
             })
         };
@@ -408,8 +400,8 @@ export class RatingsClient implements IRatingsClient {
 
     protected processCreateRating(response: HttpResponseBase): Observable<FileResponse | null> {
         const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
@@ -476,7 +468,7 @@ export class ArticleDto implements IArticleDto {
         data["publicationDate"] = this.publicationDate ? this.publicationDate.toISOString() : <any>undefined;
         data["ratingAverage"] = this.ratingAverage;
         data["authorName"] = this.authorName;
-        return data;
+        return data; 
     }
 }
 
@@ -528,7 +520,7 @@ export class ArticleCreateDto implements IArticleCreateDto {
         data["headline"] = this.headline;
         data["body"] = this.body;
         data["imageUri"] = this.imageUri;
-        return data;
+        return data; 
     }
 }
 
@@ -540,7 +532,7 @@ export interface IArticleCreateDto {
 }
 
 export class ArticleUpdateDto implements IArticleUpdateDto {
-    id?: number | undefined;
+    id!: number;
     title?: string | undefined;
     headline?: string | undefined;
     body?: string | undefined;
@@ -579,12 +571,12 @@ export class ArticleUpdateDto implements IArticleUpdateDto {
         data["headline"] = this.headline;
         data["body"] = this.body;
         data["imageUri"] = this.imageUri;
-        return data;
+        return data; 
     }
 }
 
 export interface IArticleUpdateDto {
-    id?: number | undefined;
+    id: number;
     title?: string | undefined;
     headline?: string | undefined;
     body?: string | undefined;
@@ -622,7 +614,7 @@ export class CommentDto implements ICommentDto {
         data = typeof data === 'object' ? data : {};
         data["content"] = this.content;
         data["articleId"] = this.articleId;
-        return data;
+        return data; 
     }
 }
 
@@ -662,7 +654,7 @@ export class RatingDto implements IRatingDto {
         data = typeof data === 'object' ? data : {};
         data["rate"] = this.rate;
         data["articleId"] = this.articleId;
-        return data;
+        return data; 
     }
 }
 
@@ -680,10 +672,10 @@ export interface FileResponse {
 
 export class SwaggerException extends Error {
     message: string;
-    status: number;
-    response: string;
+    status: number; 
+    response: string; 
     headers: { [key: string]: any; };
-    result: any;
+    result: any; 
 
     constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
         super();
@@ -715,12 +707,12 @@ function blobToText(blob: any): Observable<string> {
             observer.next("");
             observer.complete();
         } else {
-            let reader = new FileReader();
-            reader.onload = event => {
+            let reader = new FileReader(); 
+            reader.onload = event => { 
                 observer.next((<any>event.target).result);
                 observer.complete();
             };
-            reader.readAsText(blob);
+            reader.readAsText(blob); 
         }
     });
 }

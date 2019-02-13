@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import {EditorConfigService} from '../services/editor-config.service';
@@ -18,6 +19,7 @@ export class NewsAddComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private router: Router,
     private client: ArticlesClient,
     private configService: EditorConfigService) {
 
@@ -34,13 +36,18 @@ export class NewsAddComponent implements OnInit {
     });
   }
 
+  redirectToView(articleId: number) {
+    this.router.navigate(['/news', articleId]);
+  }
+
   get formControls() { return this.articleForm.controls; }
 
-  onSubmit(value: ArticleCreateDto, valid: boolean) {
+  onSubmit(article: ArticleCreateDto, valid: boolean) {
     this.submitted = true;
     if (valid) {
-      this.client.createArticle(value).subscribe((result) => {
+      this.client.createArticle(article).subscribe((result) => {
         this.articleForm.reset();
+        this.redirectToView(result.id);
       }, error => console.error(error.response));
     }
   }

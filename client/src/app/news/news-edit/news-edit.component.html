@@ -1,6 +1,5 @@
 <div class="card-body">
   <form novalidate
-        (ngSubmit)="save(editForm.value, editForm.valid)"
         [formGroup]="editForm">
 
     <div class="card">
@@ -60,7 +59,8 @@
           <div class="offset-md-2 col-md-8">
             <button class="btn btn-outline-primary"
               [title]="editForm.valid ? 'Save' : 'You have validation errors'"
-              [disabled]="!editForm.valid">
+              [disabled]="!editForm.valid"
+              (click)="save(editForm.value, editForm.valid)">
               Save
             </button>
             <button class="btn btn-outline-primary ml-3" (click)="cancel()">Cancel</button>
