@@ -29,13 +29,12 @@ namespace News.API.Controllers
         }
         
         [HttpGet("{id:int}", Name = "GetArticle")]
+        [Authorize]
         [ProducesResponseType(typeof(ArticleDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetArticleAsync(int id)
         {
             var newsArticle = await _repository.GetArticleAsync(id);
-
-            var user = User;
 
             if (newsArticle == null)
             {
