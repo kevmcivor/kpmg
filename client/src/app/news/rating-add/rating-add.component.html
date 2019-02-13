@@ -1,0 +1,16 @@
+<div>
+  <form novalidate
+          [formGroup]="ratingForm">
+
+          <div class="form-group">
+              <ngb-rating formControlName="rate" (rateChange)="onSubmit(ratingForm.value, ratingForm.valid)"></ngb-rating>
+              <div class="form-text small">
+                <div *ngIf="!!ratingForm.controls.rate.valid" class="text-success">Thanks!</div>
+                <div *ngIf="!!ratingForm.controls.rate.invalid" class="text-danger">Rate this article</div>
+              </div>
+              <input class="form-control"
+                type="hidden"
+                formControlName="articleId"/>
+            </div>
+  </form>
+</div>

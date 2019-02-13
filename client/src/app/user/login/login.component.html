@@ -1,0 +1,11 @@
+<ul class="navbar-nav ml-auto">
+  <li class="nav-item" *ngIf="isAdmin()">
+      <a class="nav-link" id="id05"
+      [routerLink]="['/news/news-add']"
+      routerLinkActive="active">Admin</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="id06" *ngIf="!isLoggedIn()" (click)="login()">Login</a>
+    <a class="nav-link" id="id06" *ngIf="isLoggedIn()" (click)="logout()">Logout</a>
+  </li>
+</ul>

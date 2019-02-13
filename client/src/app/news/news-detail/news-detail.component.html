@@ -1,0 +1,13 @@
+<div class="row">
+    <img src="https://placehold.it/900x300?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+    <h1>{{article.title}}</h1>
+    <p>{{article.headline}}</p>
+    <p [innerHTML]="[article.body]"></p>
+    <p>{{article.publicationDate}}</p>
+    <p>{{article.authorName}}</p>
+</div>
+<div *ngIf="isEmployee()">
+  <app-rating-add [parentArticleId]="article.id"></app-rating-add>
+  <app-comment-add [parentArticleId]="article.id"></app-comment-add>
+</div>
+

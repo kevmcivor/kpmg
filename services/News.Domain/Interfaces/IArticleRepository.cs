@@ -1,0 +1,23 @@
+﻿using News.Domain.Entities.ArticleAggregate;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace News.Domain.Interfaces
+{
+    public interface IArticleRepository
+    {
+        //move to aggreate
+        Task<Article> GetArticleAsync(int id);
+
+        Task<Article> Add(Article newsArticle);
+
+        Task<Article> Update(Article newsArticle);
+
+        Task<IEnumerable<Article>> GetRecentAsync();
+
+        Task<Comment> AddComment(Comment comment);
+
+        Task<Rating> AddRating(Rating rating);
+    }
+}

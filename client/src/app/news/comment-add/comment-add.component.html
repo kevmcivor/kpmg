@@ -1,0 +1,40 @@
+<div class="card-body">
+  <form novalidate
+        (ngSubmit)="onSubmit(commentForm.value, commentForm.valid)"
+        [formGroup]="commentForm">
+
+    <div class="card">
+      <div class="card-header">
+        Comments
+      </div>
+      <div class="card-body">
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label"
+                for="contentId">Add comment</label>
+          <div class="col-md-8">
+            <input class="form-control"
+                  type="text"
+                  id="contentId"
+                  placeholder="Comment (required)"
+                  formControlName="content"
+                  [ngClass]="{ 'is-invalid': submitted && commentForm.controls.content.errors }"/>
+
+                  <div *ngIf="submitted && !commentForm.controls.content.valid" class="invalid-feedback">
+                      <div>Comment is required</div>
+                    </div>
+              <input class="form-control"
+                  type="hidden"
+                  formControlName="articleId"/>
+          </div>
+        </div>
+
+        <div class="form-group row mb-2">
+          <div class="offset-md-2 col-md-8">
+            <button class="btn btn-outline-primary">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+</form>

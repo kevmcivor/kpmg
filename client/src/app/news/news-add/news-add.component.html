@@ -1,0 +1,80 @@
+<div class="card-body">
+  <form novalidate
+        (ngSubmit)="onSubmit(articleForm.value, articleForm.valid)"
+        [formGroup]="articleForm">
+
+    <div class="card">
+      <div class="card-header">
+        New Article
+      </div>
+      <div class="card-body">
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label"
+                for="titleId">Title</label>
+          <div class="col-md-8">
+            <input class="form-control"
+                  id="titleId"
+                  type="text"
+                  placeholder="Title (required)"
+                  formControlName="title"
+                  [ngClass]="{ 'is-invalid': submitted && formControls.title.errors }" />
+
+                  <div *ngIf="submitted && !formControls.title.valid" class="invalid-feedback">
+                    <div>Title is required</div>
+                  </div>
+          </div>
+        </div>
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label"
+                for="headlineId">Headline</label>
+          <div class="col-md-8">
+            <input class="form-control"
+                  id="headlineId"
+                  type="text"
+                  placeholder="Headline (required)"
+                  formControlName="headline"
+                  [ngClass]="{ 'is-invalid': submitted && formControls.headline.errors }"/>
+
+                  <div *ngIf="submitted && !formControls.headline.valid" class="invalid-feedback">
+                    <div>Headline is required</div>
+                  </div>
+          </div>
+        </div>
+
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label"
+                for="bodyId">Body</label>
+          <div class="col-md-8">
+            <angular-editor formControlName="body" [config]="editorConfig"></angular-editor>
+
+            <div *ngIf="submitted && !formControls.body.valid" class="invalid-feedback d-block">
+              <div>Body is required</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label"
+                for="imageUriId">Image</label>
+          <div class="col-md-8">
+            <input class="form-control"
+              id="imageUriId"
+              type="text"
+              placeholder="Image (optional)"
+              formControlName="imageUri"/>
+          </div>
+        </div>
+
+        <div class="form-group row mb-2">
+          <div class="offset-md-2 col-md-8">
+            <button class="btn btn-outline-primary">Save</button>
+            <div *ngIf="submitted && !articleForm.valid" class="invalid-feedback d-block">
+              <div>Form invalid</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+</form>

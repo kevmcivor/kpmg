@@ -1,0 +1,79 @@
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<div class="card-body">
+  <form novalidate
+        (ngSubmit)="save(editForm.value, editForm.valid)"
+        [formGroup]="editForm">
+
+    <div class="card">
+      <div class="card-header">
+        New Article
+      </div>
+      <div class="card-body">
+        <input type="hidden" formControlName="id"/>
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label"
+                for="titleId">Title</label>
+          <div class="col-md-8">
+            <input class="form-control"
+                  id="titleId"
+                  type="text"
+                  placeholder="Title (required)"
+                  formControlName="title"/>
+
+                  <div [hidden] ="!!editForm.controls.title.valid || !!editForm.controls.title.pristine" class="alert alert-danger">
+                    <span *ngIf="!editForm.controls.title.valid">Title is required!</span>
+                  </div>
+          </div>
+        </div>
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label"
+                for="headlineId">Headline</label>
+          <div class="col-md-8">
+            <input class="form-control"
+                  id="headlineId"
+                  type="text"
+                  placeholder="Headline (required)"
+                  formControlName="headline"/>
+          </div>
+        </div>
+
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label"
+                for="bodyId">Body</label>
+          <div class="col-md-8">
+            <angular-editor formControlName="body" [config]="editorConfig"></angular-editor>
+          </div>
+        </div>
+
+        <div class="form-group row mb-2">
+          <label class="col-md-2 col-form-label"
+                for="imageUriId">Image</label>
+          <div class="col-md-8">
+            <input class="form-control"
+              id="imageUriId"
+              type="text"
+              placeholder="Image (optional)"
+              formControlName="imageUri"/>
+          </div>
+        </div>
+
+        <div class="form-group row mb-2">
+          <div class="offset-md-2 col-md-8">
+            <button class="btn btn-outline-primary"
+              [title]="editForm.valid ? 'Save' : 'You have validation errors'"
+              [disabled]="!editForm.valid">
+              Save
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+</form>
+
