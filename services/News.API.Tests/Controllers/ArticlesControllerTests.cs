@@ -9,6 +9,8 @@ using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using News.API.Models;
 using AutoFixture;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace News.API.Tests
 {
@@ -75,9 +77,67 @@ namespace News.API.Tests
             result.Should().BeOfType<NotFoundResult>();
         }
 
+        [Fact]
+        public async Task PostWhenCalledWithNullReturnsBadRequestResult()
+        {
+            var result = await GetController().CreateArticleAsync(null);
+
+            result.Should().BeOfType<BadRequestResult>();
+        }
+
+        [Fact]
+        public async Task PostWhenCalledWithModelErrorsReturnsBadRequestResult()
+        {
+            var controller = GetController();
+            controller.ModelState.AddModelError("error", "error");
+
+            var result = await controller.CreateArticleAsync(_fixture.Build<ArticleCreateDto>().Create());
+
+            result.Should().BeOfType<BadRequestResult>();
+        }
+
+        [Fact]
+        public async Task PostWhenCalledWithValidModelReturnsOkResult()
+        {
+            var createDto = _fixture.Build<ArticleCreateDto>().Create();
+            _mapper.Setup(x => x.Map<Article>(createDto)).Returns(new Article());
+
+            var result = await GetController().CreateArticleAsync(createDto);
+
+            result.Should().BeOfType<OkObjectResult>();
+        }
+
+        [Fact]
+        public async Task PostWhenCalledWithValidModelCallsCreateArticleAsync()
+        {
+            var createDto = _fixture.Build<ArticleCreateDto>().Create();
+            var article = _fixture.Build<Article>().Create();
+            _mapper.Setup(x => x.Map<Article>(createDto)).Returns(article);
+
+            var result = await GetController().CreateArticleAsync(createDto);
+
+            _repository.Verify(x => x.Add(article), Times.Once);
+        }
+
         private ArticlesController GetController()
         {
-            return new ArticlesController(_repository.Object, _mapper.Object);
+            var controller = new ArticlesController(_repository.Object, _mapper.Object)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext
+                    {
+                        User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                            new Claim("sub", "Id"),
+                            new Claim("name", "name")
+                    },
+                    "AuthenticationTypes.Federation"))
+                    }
+                }
+            };
+
+            return controller;
         }
     }
 }

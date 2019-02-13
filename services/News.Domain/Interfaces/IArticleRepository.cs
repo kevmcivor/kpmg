@@ -7,7 +7,6 @@ namespace News.Domain.Interfaces
 {
     public interface IArticleRepository
     {
-        //move to aggreate
         Task<Article> GetArticleAsync(int id);
 
         Task<Article> Add(Article newsArticle);

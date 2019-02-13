@@ -14,7 +14,6 @@ namespace News.API.Controllers
 {
     [Route("api/v1/news/article")]
     [ApiController]
-    //[ApiConventionType(typeof(DefaultApiConventions))]
     public class ArticlesController : ControllerBase
     {
         private readonly IArticleRepository _repository;
@@ -46,7 +45,7 @@ namespace News.API.Controllers
             return Ok(newsArticleDto);
         }
 
-        [HttpPost(Name = "CreateArticle")] //update template
+        [HttpPost(Name = "CreateArticle")] 
         [Authorize("Admin")]
         [ProducesResponseType(typeof(ArticleDto), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateArticleAsync(
@@ -70,19 +69,12 @@ namespace News.API.Controllers
 
             var newsArticle = await _repository.Add(article); 
 
-            if (newsArticle == null)
-            {
-                return NotFound();
-            }
-
             var newsArticleDto = _mapper.Map<ArticleDto>(newsArticle);
 
             return Ok(newsArticleDto);
-
-            //return CreatedAtRoute("GetArticle", new { id = newsArticleDto.Id }, newsArticleDto);
         }
 
-        [HttpPatch(Name = "UpdateArticle")] //update template, use constants
+        [HttpPatch(Name = "UpdateArticle")]
         [Authorize("Admin")]
         [ProducesResponseType(typeof(ArticleCreateDto), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> UpdateArticleAsync([FromBody]ArticleUpdateDto newsArticleUpdateDTO)
