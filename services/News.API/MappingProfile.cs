@@ -21,7 +21,10 @@ namespace News.API
             CreateMap<ArticleCreateDto, Article>()
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.Author, opt => opt.Ignore());
-            CreateMap<ArticleCreateDto, Content>();
+
+            CreateMap<ArticleUpdateDto, Article>()
+                .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src))
+                .ForMember(dest => dest.Author, opt => opt.Ignore());
         }
     }
 }

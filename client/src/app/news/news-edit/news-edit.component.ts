@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AngularEditorConfig } from '@kolkov/angular-editor';
@@ -16,9 +16,11 @@ export class NewsEditComponent implements OnInit {
   editForm: FormGroup;
   errorMessage: string;
   editorConfig: AngularEditorConfig;
+  submitted = false;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private client: ArticlesClient,
     private fb: FormBuilder,
     private configService: EditorConfigService) {}
@@ -39,14 +41,33 @@ export class NewsEditComponent implements OnInit {
   }
 
   onArticleRetrieved(article: ArticleDto): void {
-    this.editForm.setValue(article);
+    this.editForm.setValue({
+      id: article.id,
+      title: article.title,
+      headline: article.headline,
+      body: article.body,
+      imageUri: article.imageUri
+    });
+  }
+
+  redirectToView(articleId: number) {
+    this.router.navigate(['/news', articleId]);
   }
 
   save(value: ArticleUpdateDto, valid: boolean): void {
-      this.client.updateArticle(value).subscribe(result => {
-        console.log(result);
-      }, error => console.error(error));
+      this.submitted = true;
+      if (valid) {
+        this.client.updateArticle(value).subscribe(result => {
+          this.redirectToView(value.id);
+        }, error => console.error(error));
+      }
   }
 
-  delete(): void {}
+  cancel(): void {
+    this.redirectToView(this.editForm.controls.id.value);
+  }
+
+  delete(): void {
+    this.client.deleteArticle(this.editForm.controls.id.value);
+  }
 }

@@ -13,10 +13,10 @@ export class NewsLatestComponent implements OnInit {
   recentArticles$: Observable<ArticleDto[]>;
   articles: ArticleDto[];
 
-  constructor(private _client: ArticlesClient) { }
+  constructor(private client: ArticlesClient) { }
 
   ngOnInit() {
     // ngDestroy
-    this.recentArticles$ = this._client.getRecent();
+    this.recentArticles$ = this.client.getRecent();
   }
 }

@@ -13,8 +13,16 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
+export interface IArticlesClient {
+    getArticle(id: number): Observable<ArticleDto | null>;
+    deleteArticle(id: number): Observable<void>;
+    createArticle(newsArticleCreateDTO: ArticleCreateDto): Observable<ArticleDto | null>;
+    updateArticle(newsArticleUpdateDTO: ArticleUpdateDto): Observable<ArticleDto | null>;
+    getRecent(): Observable<ArticleDto[] | null>;
+}
+
 @Injectable()
-export class ArticlesClient {
+export class ArticlesClient implements IArticlesClient {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -79,6 +87,57 @@ export class ArticlesClient {
         return _observableOf<ArticleDto | null>(<any>null);
     }
 
+    deleteArticle(id: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/v1/news/article/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteArticle(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteArticle(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDeleteArticle(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("A server error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
     createArticle(newsArticleCreateDTO: ArticleCreateDto): Observable<ArticleDto | null> {
         let url_ = this.baseUrl + "/api/v1/news/article";
         url_ = url_.replace(/[?&]$/, "");
@@ -131,7 +190,7 @@ export class ArticlesClient {
         return _observableOf<ArticleDto | null>(<any>null);
     }
 
-    updateArticle(newsArticleUpdateDTO: ArticleUpdateDto): Observable<ArticleCreateDto | null> {
+    updateArticle(newsArticleUpdateDTO: ArticleUpdateDto): Observable<ArticleDto | null> {
         let url_ = this.baseUrl + "/api/v1/news/article";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -154,14 +213,14 @@ export class ArticlesClient {
                 try {
                     return this.processUpdateArticle(<any>response_);
                 } catch (e) {
-                    return <Observable<ArticleCreateDto | null>><any>_observableThrow(e);
+                    return <Observable<ArticleDto | null>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<ArticleCreateDto | null>><any>_observableThrow(response_);
+                return <Observable<ArticleDto | null>><any>_observableThrow(response_);
         }));
     }
 
-    protected processUpdateArticle(response: HttpResponseBase): Observable<ArticleCreateDto | null> {
+    protected processUpdateArticle(response: HttpResponseBase): Observable<ArticleDto | null> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -172,7 +231,7 @@ export class ArticlesClient {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ArticleCreateDto.fromJS(resultData200) : <any>null;
+            result200 = resultData200 ? ArticleDto.fromJS(resultData200) : <any>null;
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -180,7 +239,7 @@ export class ArticlesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<ArticleCreateDto | null>(<any>null);
+        return _observableOf<ArticleDto | null>(<any>null);
     }
 
     getRecent(): Observable<ArticleDto[] | null> {
@@ -236,8 +295,12 @@ export class ArticlesClient {
     }
 }
 
+export interface ICommentsClient {
+    createComment(commentDto: CommentDto): Observable<FileResponse | null>;
+}
+
 @Injectable()
-export class CommentsClient {
+export class CommentsClient implements ICommentsClient {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -298,8 +361,12 @@ export class CommentsClient {
     }
 }
 
+export interface IRatingsClient {
+    createRating(ratingDto: RatingDto): Observable<FileResponse | null>;
+}
+
 @Injectable()
-export class RatingsClient {
+export class RatingsClient implements IRatingsClient {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -361,13 +428,13 @@ export class RatingsClient {
 }
 
 export class ArticleDto implements IArticleDto {
-    id?: number | undefined;
+    id!: number;
     title?: string | undefined;
     headline?: string | undefined;
     body?: string | undefined;
     imageUri?: string | undefined;
     publicationDate!: Date;
-    ratingAverage?: number | undefined;
+    ratingAverage!: number;
     authorName?: string | undefined;
 
     constructor(data?: IArticleDto) {
@@ -414,13 +481,13 @@ export class ArticleDto implements IArticleDto {
 }
 
 export interface IArticleDto {
-    id?: number | undefined;
+    id: number;
     title?: string | undefined;
     headline?: string | undefined;
     body?: string | undefined;
     imageUri?: string | undefined;
     publicationDate: Date;
-    ratingAverage?: number | undefined;
+    ratingAverage: number;
     authorName?: string | undefined;
 }
 
@@ -473,7 +540,7 @@ export interface IArticleCreateDto {
 }
 
 export class ArticleUpdateDto implements IArticleUpdateDto {
-    id?: string | undefined;
+    id?: number | undefined;
     title?: string | undefined;
     headline?: string | undefined;
     body?: string | undefined;
@@ -517,7 +584,7 @@ export class ArticleUpdateDto implements IArticleUpdateDto {
 }
 
 export interface IArticleUpdateDto {
-    id?: string | undefined;
+    id?: number | undefined;
     title?: string | undefined;
     headline?: string | undefined;
     body?: string | undefined;

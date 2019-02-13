@@ -28,6 +28,10 @@ export class NewsDetailComponent implements OnInit {
     return this.authService.isEmployee();
   }
 
+  isAdmin() {
+    return this.authService.isAdmin();
+  }
+
   onArticleRetrieved(article: ArticleDto): void {
     this.article = article;
   }

@@ -1,13 +1,15 @@
-<div class="row">
+<div>
     <img src="https://placehold.it/900x300?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
     <h1>{{article.title}}</h1>
-    <p>{{article.headline}}</p>
+    <p><span>{{article.authorName}} <span>{{article.publicationDate | date}}</span></span></p>
     <p [innerHTML]="[article.body]"></p>
-    <p>{{article.publicationDate}}</p>
-    <p>{{article.authorName}}</p>
+    <p><ngb-rating [rate]="[article.ratingAverage]" [readonly]="true"></ngb-rating></p>
 </div>
 <div *ngIf="isEmployee()">
   <app-rating-add [parentArticleId]="article.id"></app-rating-add>
   <app-comment-add [parentArticleId]="article.id"></app-comment-add>
+</div>
+<div *ngIf="isAdmin()">
+    <button class="btn btn-outline-primary ml-3" [routerLink]="['../'+ article.id + '/edit']">Edit</button>
 </div>
 

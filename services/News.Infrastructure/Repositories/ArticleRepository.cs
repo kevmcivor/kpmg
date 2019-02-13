@@ -49,13 +49,14 @@ namespace News.Infrastructure.Repositories
                 .Take(10).ToListAsync();
         }
 
-        public async Task<Article> Update(Article newsArticle)
+        public async Task<Article> Update(Article article)
         {
-            _context.Entry(newsArticle).State = EntityState.Modified;
+            _context.Entry(article).State = EntityState.Modified;
+            _context.Entry(article.Content).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
 
-            return await GetArticleAsync(newsArticle.Id);
+            return await GetArticleAsync(article.Id);
         }
 
         public async Task<Comment> AddComment(Comment comment)
@@ -78,6 +79,19 @@ namespace News.Infrastructure.Repositories
             await _context.SaveChangesAsync();
 
             return rating;
+        }
+
+        public void Delete(int id)
+        {
+            var article = new Article { Id = id };
+            _context.Articles.Attach(article);
+            _context.Attach(article.Content);
+
+            if (article != null)
+            {
+                _context.Remove(article);
+                _context.SaveChanges();
+            }
         }
     }
 }

@@ -76,7 +76,7 @@ namespace News.API.Controllers
 
         [HttpPatch(Name = "UpdateArticle")]
         [Authorize("Admin")]
-        [ProducesResponseType(typeof(ArticleCreateDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ArticleDto), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> UpdateArticleAsync([FromBody]ArticleUpdateDto newsArticleUpdateDTO)
         {
             if (newsArticleUpdateDTO == null)
@@ -93,7 +93,7 @@ namespace News.API.Controllers
             {
                 await _repository.Update(_mapper.Map<Article>(newsArticleUpdateDTO));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //log exception
                 return BadRequest();
@@ -101,6 +101,18 @@ namespace News.API.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{id:int}", Name = "DeleteArticle")]
+        [Authorize("Admin")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public IActionResult DeleteArticle(int id)
+        {
+             _repository.Delete(id);
+
+            return Ok();
+        }
+
 
         [HttpGet]
         [Route("recent")]

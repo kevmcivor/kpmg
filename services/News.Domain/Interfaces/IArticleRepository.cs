@@ -13,6 +13,8 @@ namespace News.Domain.Interfaces
 
         Task<Article> Update(Article newsArticle);
 
+        void Delete(int id);
+
         Task<IEnumerable<Article>> GetRecentAsync();
 
         Task<Comment> AddComment(Comment comment);
