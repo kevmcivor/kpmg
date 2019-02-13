@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using News.API.Models;
 using News.Domain.Entities.ArticleAggregate;
+using System.Linq;
+using System.Security.Claims;
 
 namespace News.API
 {
@@ -18,6 +21,7 @@ namespace News.API
                 .ForMember(dest => dest.RatingAverage, opt => opt.Ignore());
             CreateMap<Content, ArticleDto>();
 
+            CreateMap<ArticleCreateDto, Content>();
             CreateMap<ArticleCreateDto, Article>()
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.Author, opt => opt.Ignore());
@@ -25,6 +29,10 @@ namespace News.API
             CreateMap<ArticleUpdateDto, Article>()
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.Author, opt => opt.Ignore());
+
+            CreateMap<ClaimsPrincipal, Author>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Claims.Where(c => c.Type == "sub").First().Value))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Claims.Where(c => c.Type == "name").First().Value));
         }
     }
 }

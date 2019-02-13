@@ -38,12 +38,8 @@ namespace News.API.Controllers
             {
                 Rate = ratingDto.Rate,
                 Article = new Article { Id = ratingDto.ArticleId },
-                Author = new Author
-                {
-                    Id = User.Claims.Where(c => c.Type == "sub").First().Value,
-                    Name = User.Claims.Where(c => c.Type == "name").First().Value
-                }
-            };
+                Author = _mapper.Map<Author>(User)
+        };
 
             return Ok(await _repository.AddRating(rating));
         }

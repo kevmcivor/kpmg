@@ -51,8 +51,8 @@ namespace News.Infrastructure.Repositories
 
         public async Task<Article> Update(Article article)
         {
-            _context.Entry(article).State = EntityState.Modified;
-            _context.Entry(article.Content).State = EntityState.Modified;
+            _context.Attach(article.Author);
+            _context.Update(article);
 
             await _context.SaveChangesAsync();
 
@@ -81,17 +81,20 @@ namespace News.Infrastructure.Repositories
             return rating;
         }
 
-        public void Delete(int id)
+        public async Task<int> Delete(int id)
         {
-            var article = new Article { Id = id };
-            _context.Articles.Attach(article);
-            _context.Attach(article.Content);
+            var article = await _context.Articles
+                .Include(a => a.Content)
+                .FirstOrDefaultAsync(a => a.Id == id);
 
             if (article != null)
             {
+                _context.Articles.Attach(article);
                 _context.Remove(article);
-                _context.SaveChanges();
+                _context.Remove(article.Content);
             }
+
+            return await _context.SaveChangesAsync();
         }
     }
 }

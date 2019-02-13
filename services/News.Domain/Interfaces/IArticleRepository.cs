@@ -13,7 +13,7 @@ namespace News.Domain.Interfaces
 
         Task<Article> Update(Article newsArticle);
 
-        void Delete(int id);
+        Task<int> Delete(int id);
 
         Task<IEnumerable<Article>> GetRecentAsync();
 

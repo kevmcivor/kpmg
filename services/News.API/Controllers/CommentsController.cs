@@ -38,12 +38,8 @@ namespace News.API.Controllers
             {
                 Content = commentDto.Content,
                 Article = new Article { Id = commentDto.ArticleId },
-                Author = new Author
-                {
-                    Id = User.Claims.Where(c => c.Type == "sub").First().Value,
-                    Name = User.Claims.Where(c => c.Type == "name").First().Value
-                }
-            };
+                Author = _mapper.Map<Author>(User)
+        };
 
             return Ok(await _repository.AddComment(comment));
         }

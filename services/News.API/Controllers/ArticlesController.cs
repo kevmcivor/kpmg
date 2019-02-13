@@ -61,22 +61,17 @@ namespace News.API.Controllers
                 return BadRequest();
             }
 
-            var article = _mapper.Map<Article>(newsArticleCreateDTO); 
-            article.Author = new Author {
-                Id = User.Claims.Where(c => c.Type == "sub").First().Value,
-                Name = User.Claims.Where(c => c.Type == "name").First().Value
-            };
+            var article = _mapper.Map<Article>(newsArticleCreateDTO);
+            article.Author = _mapper.Map<Author>(User);
 
             var newsArticle = await _repository.Add(article); 
 
-            var newsArticleDto = _mapper.Map<ArticleDto>(newsArticle);
-
-            return Ok(newsArticleDto);
+            return Ok(_mapper.Map<ArticleDto>(newsArticle));
         }
 
         [HttpPatch(Name = "UpdateArticle")]
         [Authorize("Admin")]
-        [ProducesResponseType(typeof(ArticleDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> UpdateArticleAsync([FromBody]ArticleUpdateDto newsArticleUpdateDTO)
         {
             if (newsArticleUpdateDTO == null)
@@ -91,9 +86,12 @@ namespace News.API.Controllers
 
             try
             {
-                await _repository.Update(_mapper.Map<Article>(newsArticleUpdateDTO));
+                var article = _mapper.Map<Article>(newsArticleUpdateDTO);
+                article.Author = _mapper.Map<Author>(User);
+
+                await _repository.Update(article);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //log exception
                 return BadRequest();
@@ -104,13 +102,20 @@ namespace News.API.Controllers
 
         [HttpDelete("{id:int}", Name = "DeleteArticle")]
         [Authorize("Admin")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public IActionResult DeleteArticle(int id)
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> DeleteArticle(int id)
         {
-             _repository.Delete(id);
+            try
+            {
+                await _repository.Delete(id);
+            }
+            catch (Exception ex)
+            {
+                //log exception
+                return BadRequest();
+            }
 
-            return Ok();
+            return NoContent();
         }
 
 
