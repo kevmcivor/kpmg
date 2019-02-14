@@ -18,6 +18,10 @@ using Microsoft.EntityFrameworkCore;
 using NJsonSchema;
 using NSwag.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using News.API.Models;
+using News.API.Validators;
 
 namespace News.API
 {
@@ -33,7 +37,8 @@ namespace News.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddFluentValidation();
 
             services.AddMvcCore()
                 .AddAuthorization(options => options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "Admin")))
@@ -74,6 +79,7 @@ namespace News.API
                 };
             });
 
+            services.AddSingleton<IValidator<ArticleCreateDto>, ArticleCreateValidator>();
             services.AddTransient<IArticleRepository, ArticleRepository>();
 
             //connection should be environment variable
