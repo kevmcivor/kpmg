@@ -17,6 +17,8 @@ namespace News.Infrastructure
         public DbSet<Article> Articles { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Content> Content { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

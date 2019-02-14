@@ -59,28 +59,6 @@ namespace News.Infrastructure.Repositories
             return await GetArticleAsync(article.Id);
         }
 
-        public async Task<Comment> AddComment(Comment comment)
-        {
-            _context.Attach(comment.Author);
-            _context.Attach(comment.Article);
-            _context.Add(comment);
-
-            await _context.SaveChangesAsync();
-
-            return comment;
-        }
-
-        public async Task<Rating> AddRating(Rating rating)
-        {
-            _context.Attach(rating.Author);
-            _context.Attach(rating.Article);
-            _context.Add(rating);
-
-            await _context.SaveChangesAsync();
-
-            return rating;
-        }
-
         public async Task<int> Delete(int id)
         {
             var article = await _context.Articles
@@ -95,6 +73,38 @@ namespace News.Infrastructure.Repositories
             }
 
             return await _context.SaveChangesAsync();
+        }
+
+        public async Task<Comment> AddComment(Comment comment)
+        {
+            _context.Attach(comment.Author);
+            _context.Attach(comment.Article);
+            _context.Add(comment);
+
+            await _context.SaveChangesAsync();
+
+            return comment;
+        }
+
+        public async Task<IEnumerable<Comment>> GetCommentsAsync(int articleId)
+        {
+            return await _context.Comments
+                .Include(c => c.Author)
+                .Where(c => c.Article.Id == articleId)
+                .OrderByDescending(c => c.Id)
+                .Take(10)
+                .ToListAsync();
+        }
+
+        public async Task<Rating> AddRating(Rating rating)
+        {
+            _context.Attach(rating.Author);
+            _context.Attach(rating.Article);
+            _context.Add(rating);
+
+            await _context.SaveChangesAsync();
+
+            return rating;
         }
     }
 }

@@ -34,14 +34,25 @@ namespace News.API.Controllers
         [HttpPost()]
         public async Task<IActionResult> CreateCommentAsync([FromBody] CommentDto commentDto)
         {
-            var comment = new Comment
-            {
-                Content = commentDto.Content,
-                Article = new Article { Id = commentDto.ArticleId },
-                Author = _mapper.Map<Author>(User)
-        };
+            var comment = _mapper.Map<Comment>(commentDto);
+            comment.Author = _mapper.Map<Author>(User);
 
             return Ok(await _repository.AddComment(comment));
+        }
+
+        [HttpGet("article/{articleId}", Name = "GetComments")]
+        [ProducesResponseType(typeof(IEnumerable<CommentDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> GetByArticle(int articleId)
+        {
+            var comments = await _repository.GetCommentsAsync(articleId);
+
+            if (comments == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(_mapper.Map<List<CommentDto>>(comments));
         }
     }
 }

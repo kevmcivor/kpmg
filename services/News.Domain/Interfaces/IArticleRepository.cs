@@ -19,6 +19,8 @@ namespace News.Domain.Interfaces
 
         Task<Comment> AddComment(Comment comment);
 
+        Task<IEnumerable<Comment>> GetCommentsAsync(int articleId);
+
         Task<Rating> AddRating(Rating rating);
     }
 }
