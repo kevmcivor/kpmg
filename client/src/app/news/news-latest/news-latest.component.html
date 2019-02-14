@@ -3,8 +3,8 @@
     <div class="row">
       <div *ngFor="let article of recentArticles; let i = index" class="col-sm-6">
           <div>
-            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-            <h3><a [routerLink]="['../' + article.id]">{{article.title}}</a></h3>
+            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive img-thumbnail" style="width:100%" alt="Image">
+            <h3 class="mt-1"><a [routerLink]="['../' + article.id]">{{article.title}}</a></h3>
             <p>{{article.headline}}</p>
             <p><ngb-rating [rate]="6" [readonly]="true"></ngb-rating></p>
           </div>
