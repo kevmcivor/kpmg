@@ -38,3 +38,15 @@
       </div>
     </div>
 </form>
+
+<div *ngIf="comments$ | async as articleComments; else loading">
+    <div *ngFor="let comment of articleComments;">
+        <div>
+          <p>{{comment.authorName}} - {{comment.content}}</p>
+        </div>
+    </div>
+</div>
+
+<ng-template #loading>
+  Loading comments...
+</ng-template><p>
