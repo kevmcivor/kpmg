@@ -38,7 +38,7 @@ export class CommentAddComponent implements OnInit {
     if (valid) {
       this.client.createComment(value).subscribe(result => {
         this.submitted = false;
-        this.commentForm.reset();
+        this.commentForm.controls.content.reset();
         this.getCommentsForArticle();
       }, error => console.error(error.response));
     }
