@@ -1,4 +1,6 @@
-﻿namespace News.API.Models
+﻿using System;
+
+namespace News.API.Models
 {
     public class ArticleUpdateDto
     {
@@ -9,6 +11,8 @@
         public string Headline { get; set; }
 
         public string Body { get; set; }
+
+        public DateTime PublicationDate { get; set; }
 
         public string ImageUri { get; set; }
     }
