@@ -29,6 +29,8 @@ namespace News.API
             CreateMap<ArticleUpdateDto, Article>()
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.Author, opt => opt.Ignore());
+            CreateMap<ArticleUpdateDto, Content>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             CreateMap<ClaimsPrincipal, Author>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Claims.Where(c => c.Type == "sub").First().Value))

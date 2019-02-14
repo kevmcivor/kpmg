@@ -49,10 +49,17 @@ namespace News.Infrastructure.Repositories
                 .Take(10).ToListAsync();
         }
 
-        public async Task<Article> Update(Article article)
+        public async Task<Article> Update(Article articleUpdate)
         {
-            _context.Attach(article);
-            _context.Update(article.Content);
+            var article = await _context.Articles
+                .Include(a => a.Content)
+                .FirstAsync(a => a.Id == articleUpdate.Id);
+
+            article.PublicationDate = articleUpdate.PublicationDate;
+            article.Content.Title = articleUpdate.Content.Title;
+            article.Content.Headline = articleUpdate.Content.Headline;
+            article.Content.Body = articleUpdate.Content.Body;
+            article.Content.ImageUri = articleUpdate.Content.ImageUri;
 
             await _context.SaveChangesAsync();
 
@@ -61,13 +68,19 @@ namespace News.Infrastructure.Repositories
 
         public async Task<int> Delete(int id)
         {
+            //use TransactionScope
             var article = await _context.Articles
                 .Include(a => a.Content)
                 .FirstOrDefaultAsync(a => a.Id == id);
+            var comments = await _context.Comments
+                .Where(c => c.Article.Id == id).ToListAsync();
+            var ratings = await _context.Ratings
+                .Where(r => r.Article.Id == id).ToListAsync();
 
             if (article != null)
             {
-                _context.Articles.Attach(article);
+                comments.ForEach(c => _context.Remove(c));
+                ratings.ForEach(r => _context.Remove(r));
                 _context.Remove(article);
                 _context.Remove(article.Content);
             }
