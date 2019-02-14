@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {FormControl, Validators, FormGroup, FormBuilder} from '@angular/forms';
 import { RatingsClient, RatingDto } from '../../api.client.generated';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-rating-add',
@@ -11,6 +12,7 @@ export class RatingAddComponent implements OnInit {
 
   @Input() parentArticleId: number;
   ratingForm: FormGroup;
+  userRating$: Observable<RatingDto>;
 
   constructor(
     private fb: FormBuilder,
@@ -21,6 +23,8 @@ export class RatingAddComponent implements OnInit {
       articleId: [this.parentArticleId],
       rate: [0, [Validators.required, Validators.min(1)]],
     });
+
+    this.getRatingForCurrentUser();
   }
 
   toggle() {
@@ -29,6 +33,10 @@ export class RatingAddComponent implements OnInit {
     } else {
       this.ratingForm.controls.rate.disable();
     }
+  }
+
+  private getRatingForCurrentUser() {
+      this.userRating$ = this.client.getArticleRatingByUser(this.parentArticleId);
   }
 
   // ngDetroy

@@ -289,6 +289,7 @@ export class ArticlesClient implements IArticlesClient {
 
 export interface ICommentsClient {
     createComment(commentDto: CommentDto): Observable<FileResponse | null>;
+    getByArticle(articleId: number): Observable<CommentDto[] | null>;
 }
 
 @Injectable()
@@ -351,10 +352,70 @@ export class CommentsClient implements ICommentsClient {
         }
         return _observableOf<FileResponse | null>(<any>null);
     }
+
+    getByArticle(articleId: number): Observable<CommentDto[] | null> {
+        let url_ = this.baseUrl + "/api/v1/news/comment/article/{articleId}";
+        if (articleId === undefined || articleId === null)
+            throw new Error("The parameter 'articleId' must be defined.");
+        url_ = url_.replace("{articleId}", encodeURIComponent("" + articleId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetByArticle(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetByArticle(<any>response_);
+                } catch (e) {
+                    return <Observable<CommentDto[] | null>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CommentDto[] | null>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetByArticle(response: HttpResponseBase): Observable<CommentDto[] | null> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CommentDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("A server error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CommentDto[] | null>(<any>null);
+    }
 }
 
 export interface IRatingsClient {
     createRating(ratingDto: RatingDto): Observable<FileResponse | null>;
+    getArticleRatingByUser(articleId: number): Observable<RatingDto | null>;
 }
 
 @Injectable()
@@ -416,6 +477,61 @@ export class RatingsClient implements IRatingsClient {
             }));
         }
         return _observableOf<FileResponse | null>(<any>null);
+    }
+
+    getArticleRatingByUser(articleId: number): Observable<RatingDto | null> {
+        let url_ = this.baseUrl + "/api/v1/news/rating/employee/article/{articleId}";
+        if (articleId === undefined || articleId === null)
+            throw new Error("The parameter 'articleId' must be defined.");
+        url_ = url_.replace("{articleId}", encodeURIComponent("" + articleId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetArticleRatingByUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetArticleRatingByUser(<any>response_);
+                } catch (e) {
+                    return <Observable<RatingDto | null>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<RatingDto | null>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetArticleRatingByUser(response: HttpResponseBase): Observable<RatingDto | null> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? RatingDto.fromJS(resultData200) : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("A server error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<RatingDto | null>(<any>null);
     }
 }
 
@@ -586,6 +702,7 @@ export interface IArticleUpdateDto {
 export class CommentDto implements ICommentDto {
     content?: string | undefined;
     articleId!: number;
+    authorName?: string | undefined;
 
     constructor(data?: ICommentDto) {
         if (data) {
@@ -600,6 +717,7 @@ export class CommentDto implements ICommentDto {
         if (data) {
             this.content = data["content"];
             this.articleId = data["articleId"];
+            this.authorName = data["authorName"];
         }
     }
 
@@ -614,6 +732,7 @@ export class CommentDto implements ICommentDto {
         data = typeof data === 'object' ? data : {};
         data["content"] = this.content;
         data["articleId"] = this.articleId;
+        data["authorName"] = this.authorName;
         return data; 
     }
 }
@@ -621,6 +740,7 @@ export class CommentDto implements ICommentDto {
 export interface ICommentDto {
     content?: string | undefined;
     articleId: number;
+    authorName?: string | undefined;
 }
 
 export class RatingDto implements IRatingDto {

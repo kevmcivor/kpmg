@@ -1,16 +1,30 @@
-<div>
-  <form novalidate
-          [formGroup]="ratingForm">
+<div *ngIf="userRating$ | async as rating; else loading">
+  <div *ngIf="rating.rate === 0">
+    <form novalidate
+            [formGroup]="ratingForm">
 
-          <div class="form-group">
-              <ngb-rating formControlName="rate" (rateChange)="onSubmit(ratingForm.value, ratingForm.valid)"></ngb-rating>
-              <div class="form-text small">
-                <div *ngIf="!!ratingForm.controls.rate.valid" class="text-success">Thanks!</div>
-                <div *ngIf="!!ratingForm.controls.rate.invalid" class="text-danger">Rate this article</div>
+            <div class="form-group">
+                <ngb-rating formControlName="rate" (rateChange)="onSubmit(ratingForm.value, ratingForm.valid)"></ngb-rating>
+                <div class="form-text small">
+                  <div *ngIf="!!ratingForm.controls.rate.valid" class="text-success">Thanks!</div>
+                  <div *ngIf="!!ratingForm.controls.rate.invalid" class="text-danger">Rate this article</div>
+                </div>
+                <input class="form-control"
+                  type="hidden"
+                  formControlName="articleId"/>
               </div>
-              <input class="form-control"
-                type="hidden"
-                formControlName="articleId"/>
-            </div>
-  </form>
+    </form>
+  </div>
+  <div *ngIf="rating.rate > 0">
+    <ngb-rating [rate]="[rating.rate]" [readonly]="true"></ngb-rating>
+    <div class="form-text small">
+      <div class="text-success">Your rating</div>
+    </div>
+  </div>
 </div>
+
+
+<ng-template #loading>
+  Loading rating...
+</ng-template><p>
+
