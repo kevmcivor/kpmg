@@ -1,7 +1,7 @@
 <div>
-    <img src="https://placehold.it/900x300?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+    <img src="https://placehold.it/900x300?text=IMAGE" class="img-responsive mb-2" style="width:100%" alt="Image">
     <h1>{{article.title}}</h1>
-    <p><span>{{article.authorName}} <span>{{article.publicationDate | date}}</span></span></p>
+    <p class="font-italic"><span>{{article.authorName}} <span>{{article.publicationDate | date}}</span></span></p>
     <p [innerHTML]="[article.body]"></p>
 </div>
 <div *ngIf="isEmployee()">
@@ -9,6 +9,6 @@
   <app-comment-add [parentArticleId]="article.id"></app-comment-add>
 </div>
 <div *ngIf="isAdmin()">
-    <button class="btn btn-outline-primary ml-3" [routerLink]="['../'+ article.id + '/edit']">Edit</button>
+    <button class="btn btn-outline-primary" [routerLink]="['../'+ article.id + '/edit']">Edit</button>
 </div>
 

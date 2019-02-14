@@ -1,4 +1,4 @@
-<div class="card-body">
+<div class="w-75">
   <form novalidate
         (ngSubmit)="onSubmit(commentForm.value, commentForm.valid)"
         [formGroup]="commentForm">
@@ -38,14 +38,15 @@
       </div>
     </div>
 </form>
+</div>
 
 <div *ngIf="comments$ | async as articleComments; else loading">
-    <div *ngFor="let comment of articleComments;">
-        <div>
-          <p>{{comment.authorName}} - {{comment.content}}</p>
-        </div>
-    </div>
+  <div *ngFor="let comment of articleComments;" class="mt-3">
+      <div class="font-weight-light">
+        <p><span class="font-italic">{{comment.authorName}}</span><br/>{{comment.content}}</p>
+  </div>
 </div>
+
 
 <ng-template #loading>
   Loading comments...
