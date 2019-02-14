@@ -99,8 +99,13 @@ namespace News.API
                 app.UseHsts();
             }
 
-            app.UseSwagger();
-            app.UseSwaggerUi3();
+            app.UseSwagger(settings => {
+                settings.Path = "/swagger-ui/v1/swagger.json";
+            });
+            app.UseSwaggerUi3(settings => {
+                settings.Path = "/swagger-ui";
+                settings.SwaggerRoutes.Add(new SwaggerUi3Route("v1", "/swagger-ui/v1/swagger.json"));
+            });
 
             app.UseHttpsRedirection();
             app.UseCors("default");
