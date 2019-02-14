@@ -32,7 +32,8 @@ export class NewsAddComponent implements OnInit {
       title: ['', [Validators.required, Validators.maxLength(100)]],
       headline: ['', [Validators.required, Validators.maxLength(1000)]],
       body: ['', [Validators.required, Validators.maxLength(4000)]],
-      imageUri: ['', [Validators.required, Validators.maxLength(100)]]
+      imageUri: ['', [Validators.required, Validators.maxLength(100)]],
+      publicationDate: ['', [Validators.required, Validators.maxLength(100)]]
     });
   }
 
