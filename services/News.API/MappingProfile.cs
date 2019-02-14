@@ -45,6 +45,17 @@ namespace News.API
 
             CreateMap<Comment, CommentDto>()
                 .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(scr => scr.Author.Name));
+
+            CreateMap<RatingDto, Article>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ArticleId))
+                .ForMember(dest => dest.Author, opt => opt.Ignore())
+                .ForMember(dest => dest.Content, opt => opt.Ignore())
+                .ForMember(dest => dest.PublicationDate, opt => opt.MapFrom(src => src.ArticleId));
+            CreateMap<RatingDto, Rating>()
+                .ForMember(dest => dest.Article, opt => opt.MapFrom(src => src))
+                .ForMember(dest => dest.Author, opt => opt.Ignore());
+
+            CreateMap<Rating, RatingDto>();
         }
     }
 }

@@ -29,19 +29,31 @@ namespace News.API.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        [HttpPost]
+        [HttpPost(Name = "CreateRating")]
         [Authorize("Employee")]
-        [HttpPost()]
         public async Task<IActionResult> CreateRatingAsync([FromBody] RatingDto ratingDto)
         {
-            var rating = new Rating
-            {
-                Rate = ratingDto.Rate,
-                Article = new Article { Id = ratingDto.ArticleId },
-                Author = _mapper.Map<Author>(User)
-        };
+            var rating = _mapper.Map<Rating>(ratingDto);
+            rating.Author = _mapper.Map<Author>(User);
 
             return Ok(await _repository.AddRating(rating));
+        }
+
+        [HttpGet("employee/article/{articleId}", Name = "GetArticleRatingByUser")]
+        [Authorize("Employee")]
+        [ProducesResponseType(typeof(RatingDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> GetArticleRatingByUser(int articleId)
+        {
+            var userId = User.Claims.Where(c => c.Type == "sub").First().Value;
+            var rating = await _repository.GetByArticleRatingByUserId(userId, articleId);
+
+            if (rating == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(_mapper.Map<RatingDto>(rating));
         }
     }
 }

@@ -22,5 +22,7 @@ namespace News.Domain.Interfaces
         Task<IEnumerable<Comment>> GetCommentsAsync(int articleId);
 
         Task<Rating> AddRating(Rating rating);
+
+        Task<Rating> GetByArticleRatingByUserId(string userId, int articleId);
     }
 }
