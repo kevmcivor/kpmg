@@ -51,8 +51,8 @@ namespace News.Infrastructure.Repositories
 
         public async Task<Article> Update(Article article)
         {
-            _context.Attach(article.Author);
-            _context.Update(article);
+            _context.Attach(article);
+            _context.Update(article.Content);
 
             await _context.SaveChangesAsync();
 
