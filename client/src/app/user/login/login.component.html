@@ -2,10 +2,10 @@
   <li class="nav-item" *ngIf="isAdmin()">
       <a class="nav-link" id="id05"
       [routerLink]="['/news/news-add']"
-      routerLinkActive="active">Admin</a>
+      routerLinkActive="active"><i class="fas fa-cog mr-1"></i>Admin</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="id06" *ngIf="!isLoggedIn()" (click)="login()">Login</a>
-    <a class="nav-link" id="id06" *ngIf="isLoggedIn()" (click)="logout()">Logout</a>
+    <a class="nav-link" id="id06" *ngIf="!isLoggedIn()" (click)="login()"><i class="fas fa-sign-out-alt mr-1"></i>Login</a>
+    <a class="nav-link" id="id06" *ngIf="isLoggedIn()" (click)="logout()"><i class="fas fa-sign-in-alt mr-1"></i>Logout</a>
   </li>
 </ul>

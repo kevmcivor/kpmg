@@ -61,10 +61,10 @@
               [title]="editForm.valid ? 'Save' : 'You have validation errors'"
               [disabled]="!editForm.valid"
               (click)="save(editForm.value, editForm.valid)">
-              Save
+              <i class="far fa-save mr-2"></i>Save
             </button>
-            <button class="btn btn-outline-primary ml-3" (click)="cancel()">Cancel</button>
-            <button class="btn btn-outline-primary ml-3" (click)="delete()">Delete</button>
+            <button class="btn btn-outline-primary ml-3" (click)="cancel()"><i class="far fa-window-close mr-2"></i>Cancel</button>
+            <button class="btn btn-outline-primary ml-3" (click)="delete()"><i class="far fa-trash-alt mr-2"></i>Delete</button>
           </div>
         </div>
 
