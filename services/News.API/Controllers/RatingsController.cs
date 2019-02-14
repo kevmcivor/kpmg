@@ -42,7 +42,6 @@ namespace News.API.Controllers
         [HttpGet("employee/article/{articleId}", Name = "GetArticleRatingByUser")]
         [Authorize("Employee")]
         [ProducesResponseType(typeof(RatingDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> GetArticleRatingByUser(int articleId)
         {
             var userId = User.Claims.Where(c => c.Type == "sub").First().Value;
@@ -50,7 +49,7 @@ namespace News.API.Controllers
 
             if (rating == null)
             {
-                return NoContent();
+                rating = new Rating();
             }
 
             return Ok(_mapper.Map<RatingDto>(rating));

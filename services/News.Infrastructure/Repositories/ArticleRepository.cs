@@ -106,5 +106,15 @@ namespace News.Infrastructure.Repositories
 
             return rating;
         }
+
+        public async Task<Rating> GetByArticleRatingByUserId(
+            string userId, 
+            int articleId)
+        {
+            return await _context.Ratings
+                .Include(r => r.Article)
+                .Where(r => r.Article.Id == articleId && r.Author.Id == userId)
+                .FirstOrDefaultAsync();
+        }
     }
 }
