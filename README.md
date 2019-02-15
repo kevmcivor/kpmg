@@ -12,7 +12,7 @@ The instructions to install and run the Client and Service applications are with
 6. Boostrap, to avoid dependency on jQuery ng-bootstrap widgets have been used.
 
 ## Disclaimer
-Being a demo, a number of aspects of the implementation are obviously neither complete or production ready. Only example validation has been added to the Angular Client and API (FluentValidation) and image upload has not been added. Furthermore, the approach taken is not the most optimal in terms of speed for the excercise e.g. I could have scaffolded an MVC App but I wanted to demonstrate an understanding of modern web applications.
+Being a demo, a number of aspects of the implementation are obviously neither complete or production ready. Only example validation has been added to the Angular Client and API (FluentValidation), image upload has not been included and config is mainly hard coded. Furthermore, the approach taken is not the most optimal in terms of speed for the excercise e.g. I could have scaffolded an MVC App but I wanted to demonstrate an understanding of modern web applications.
 
 ## Unit tests
 Token coverage has been added for the controllers to provide an idea of test approach using xUnit, Moq, and AutoFixture.
