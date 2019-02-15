@@ -2,7 +2,7 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.0.
 
-Instsall Node and Angular CLI version 7.3.0.
+Install Node and Angular CLI version 7.3.0.
 
 ## Install dependencies
 
