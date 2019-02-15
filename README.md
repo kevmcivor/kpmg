@@ -16,8 +16,8 @@ Being a demo, a number of aspects of the implementation are obviously neither co
 ## Unit tests
 Token coverage has been added for the controllers to provide an idea of test approach using xUnit, Moq, and AutoFixture.
 
-## Unit tests
-Token coverage has been added for the controllers to provide an idea of test approach using xUnit, Moq, and AutoFixture.
+## Troubleshooting
+I cloned the repo on a 10 year old laptop to verify the steps provided. Laptop performance aside the only issues I encountered were with the LocalDB connection string. The migrations applied fine but the connection failed when running the application. To resolve run 'SELECT @@SERVERNAME' against the database server and update the connection strings.
 
 ## Usage
 
