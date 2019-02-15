@@ -6,7 +6,7 @@ The instructions to install and run the Client and Service applications are with
 
 1. ASP.NET Core 2.2
 2. EF Core
-3. OpenID using IdentityServer4. This is a configured template [https://www.nuget.org/packages/IdentityServer4.Templates/] adapted to include additional Claims and IProfile service. On client side oicd-client is used for implicit flow in Angular.
+3. OpenID using IdentityServer4. This is a configured template [https://www.nuget.org/packages/IdentityServer4.Templates/] adapted to include additional Claims and IProfile service. On the client side oicd-client is used for implicit flow in Angular.
 4. Angular 7
 5. Boostrap. To avoid dependency on jQuery ng-bootstrap widgets have been used.
 
