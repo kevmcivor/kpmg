@@ -18,8 +18,12 @@ To install SQL Server database:
 6. Run SeedData.sql against database
 
 
-## Development server
+## Run
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. 
+Set the project up to run Multiple startup projects:
+1. In Visual Studio, right-click Solution > Multiple startup projects
+2. Set Identity.API and News.API project action to 'Start'
+3. Launch the debugger
+4. IdentityServer4 should launch in new browser window on http://localhost:5000/, the Angular Client has a dependency on this port being used.
+5. Swagger should launch in a new browser version on https://localhost:44305/swagger-ui/index.html. the Angular Client has a dependency on this port being used. SSL is enabled for News.API, accept any Visual Studio prompts to install certificate).
 
-IdentityServer4 and the API are configured to use this port for CORS and redirect.
