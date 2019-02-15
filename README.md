@@ -4,11 +4,12 @@ The instructions to install and run the Client and Service applications are with
 
 ## Technologies
 
-1. ASP.NET Core 2.2
-2. EF Core
+1. ASP.NET Core 2.2.
+2. EF Core.
 3. OpenID using IdentityServer4. This is a configured template [https://www.nuget.org/packages/IdentityServer4.Templates/] adapted to include additional Claims and IProfile service. On the client side oicd-client is used for implicit flow in Angular.
-4. Angular 7
-5. Boostrap. To avoid dependency on jQuery ng-bootstrap widgets have been used.
+4. Angular 7.
+5. NSwag studio used to generate Angular Typscript client for the API.
+6. Boostrap, to avoid dependency on jQuery ng-bootstrap widgets have been used.
 
 ## Disclaimer
 Being a demo, a number of aspects of the implementation are obviously neither complete or production ready. Only example validation has been added to the Angular Client and API (FluentValidation) and image upload has not been added. Furthermore, the approach taken is not the most optimal in terms of speed for the excercise e.g. I could have scaffolded an MVC App but I wanted to demonstrate an understanding of modern web applications.
