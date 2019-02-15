@@ -7,7 +7,7 @@ Open PressfordConsulting.sln and restore packages.
 
 ## Databases
 
-AspIdUsers SQLite databases is already seeded with 2 users and respective claims. Download SQLiteStudio [https://sqlitestudio.pl] to interrogate database.
+AspIdUsers SQLite databases is already seeded with 2 users and respective claims. Download SQLiteStudio [https://sqlitestudio.pl] to interrogate database if desired.
 
 To install SQL Server database:
 1. Go to Package Manager console 
